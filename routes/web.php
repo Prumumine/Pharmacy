@@ -7,6 +7,7 @@ use App\Http\Controllers\PharmaciensController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\SuiviController;
 use App\Http\Controllers\VenteController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,4 +47,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('clients', ClientsController::class);
     Route::resource('ventes', VenteController::class);
     Route::get('/suivis', [SuiviController::class, 'index'])->name('suivis.index');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    // User management routes will be added here later
+    Route::get('/users', [AdminController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [AdminController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [AdminController::class, 'update'])->name('users.update');
 });
