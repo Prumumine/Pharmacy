@@ -1,3 +1,4 @@
+@php use App\Models\User; @endphp
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -49,6 +50,11 @@
 
   <div class="sidebar">
     <h4 class="text-center">Menu</h4>
+    @auth
+        @if(Auth::user()->is_role == App\Models\User::ROLE_ADMIN)
+            <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+        @endif
+    @endauth
     <a href="{{url('/suivis')}}">Tableau de bord</a>
     <a href="#">Profil</a>
     <a href="{{url('/produits')}}">Produits</a>
