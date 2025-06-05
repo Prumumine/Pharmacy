@@ -4,67 +4,87 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
-use App\Models\Produits;
 use Illuminate\View\View;
+use App\Models\Produits;
 
 class ProduitsController extends Controller
 {
     public function index(): View
     {
         $produits = Produits::all();
-        return view ('produits.index')->with('produits', $produits);
+        return view('produits.index', [
+            'produits' => $produits,
+            'isAdmin' => auth()->check() && auth()->user()->is_role == 1
+        ]);
     }
 
     public function create(): View
     {
+        if (auth()->user()->is_role != 1) {
+            abort(403, 'Accès non autorisé.');
+        }
+
         return view('produits.create');
     }
 
-    // Exemple dans ProduitsController
-public function store(Request $request)
-{
-    $request->validate([
-        'nom' => 'required|string|max:255',
-        'prix' => 'required|numeric|min:0',
-        'stock' => 'required|integer|min:0',
-    ]);
-
-    Produits::create([
-        'nom' => $request->nom,
-        'prix' => $request->prix,
-        'stock' => $request->stock,
-        'description' => $request->description,
-        'categorie' => $request->categorie,
-    ]);
-
-    return redirect()->route('produits.index')->with('success', 'Produit ajouté avec succès.');
-}
-
-    public function show(string $id): View  
+    public function store(Request $request): RedirectResponse
     {
-        $produits= Produits::find($id);
-        return view('produits.show')->with('produit', $produits);
+        if (auth()->user()->is_role != 1) {
+            abort(403, 'Action non autorisée.');
+        }
+
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'prix' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+        ]);
+
+        Produits::create([
+            'nom' => $request->nom,
+            'prix' => $request->prix,
+            'stock' => $request->stock,
+            'description' => $request->description,
+            'categorie' => $request->categorie,
+        ]);
+
+        return redirect()->route('produits.index')->with('success', 'Produit ajouté avec succès.');
     }
 
-     public function edit(string $id): View  
+    public function show(string $id): View
     {
-        $produits= Produits::find($id);
-        return view('produits.edit')->with('produit', $produits);
+        $produit = Produits::findOrFail($id);
+        return view('produits.show', compact('produit'));
+    }
+
+    public function edit(string $id): View
+    {
+        if (auth()->user()->is_role != 1) {
+            abort(403, 'Accès non autorisé.');
+        }
+
+        $produit = Produits::findOrFail($id);
+        return view('produits.edit', compact('produit'));
     }
 
     public function update(Request $request, string $id): RedirectResponse
     {
-        $produits = Produits::find($id);
-        $input = $request->all();
-        $produits->update($input);
-        return redirect('produits')->with('flash_message', 'Produit modifie');
+        if (auth()->user()->is_role != 1) {
+            abort(403, 'Action non autorisée.');
+        }
+
+        $produit = Produits::findOrFail($id);
+        $produit->update($request->all());
+
+        return redirect()->route('produits.index')->with('success', 'Produit modifié avec succès.');
     }
 
     public function destroy(string $id): RedirectResponse
     {
-        Produits::destroy($id);
-        return redirect('produits')->with('flash_message', 'Ce produit a ete supprimer avec succes');
-    }
+        if (auth()->user()->is_role != 1) {
+            abort(403, 'Action non autorisée.');
+        }
 
+        Produits::destroy($id);
+        return redirect()->route('produits.index')->with('success', 'Produit supprimé avec succès.');
+    }
 }

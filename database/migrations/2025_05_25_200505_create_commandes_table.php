@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('commandes', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+       Schema::create('commandes', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        $table->foreignId('produit_id')->constrained()->onDelete('cascade');
+        $table->integer('quantite');
+        $table->timestamps();
+    });    }
 
     /**
      * Reverse the migrations.

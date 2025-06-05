@@ -1,9 +1,10 @@
-@extends('layout')
-
-@section('content')
-<div class="container">
-    <h1>Admin Dashboard</h1>
-    <p>Welcome to the admin area!</p>
-    <p><a href="{{ route('admin.users.index') }}">Manage Users</a></p>
-</div>
-@endsection
+@auth
+    @if(Auth::user()->is_role === App\Models\User::ROLE_ADMIN)
+        <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+        <a href="{{ route('suivis.index') }}">Tableau de bord</a>
+        <a href="{{ route('pharmaciens.index') }}">Pharmacien</a>
+        <a href="{{ route('ventes.index') }}">Ventes</a>
+        <a href="{{ route('clients.index') }}">Clients</a>
+        <a href="{{ route('user.index') }}">Utilisateurs</a>
+    @endif
+@endauth

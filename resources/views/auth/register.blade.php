@@ -11,47 +11,81 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
+
         .container {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 350px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            padding: 35px 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
+
+        h2 {
+            margin-bottom: 20px;
+            color: #2c5364;
         }
-        input:focus {
+
+        label {
+            display: block;
+            margin-top: 15px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: 0.3s border-color ease;
+        }
+
+        input:focus, select:focus {
             border-color: #2c5364;
             outline: none;
         }
+
         button {
             background-color: #2c5364;
             color: white;
             border: none;
             padding: 12px;
             width: 100%;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 25px;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #1b2a36;
         }
+
         .errors {
             color: red;
-            margin-bottom: 10px;
-            text-align: left;
+            margin-bottom: 15px;
             font-size: 14px;
+            text-align: left;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .login-link {
+            margin-top: 15px;
+            display: block;
+            font-size: 14px;
+            color: #2c5364;
         }
     </style>
 </head>
@@ -69,7 +103,32 @@
             </div>
         @endif
 
+        <form method="POST" action="{{ route('auth.register.post') }}">
+            @csrf
 
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" value="{{ old('nom') }}" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="password_confirmation">Confirmer le mot de passe</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" required>
+
+            <label for="role">Rôle</label>
+            <select id="role" name="role" required>
+                <option value="client" selected>Client</option>
+                <option value="pharmacien">Pharmacien</option>
+                <option value="admin">Admin</option>
+            </select>
+
+            <button type="submit">S'inscrire</button>
+        </form>
+
+        <a class="login-link" href="{{ route('login') }}">Déjà inscrit ? Connectez-vous</a>
     </div>
 </body>
 </html>

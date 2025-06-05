@@ -1,49 +1,42 @@
 @extends('layout')
 
-@section('title', 'Liste des Ventes')
-
 @section('content')
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-success">Ventes</h2>
-        <a href="{{ route('ventes.create') }}" class="btn btn-success">+ Ajouter une vente</a>
-    </div>
+<div class="container">
+    <h1>Liste des ventes</h1>
+    <a href="{{ route('ventes.create') }}" class="btn btn-primary mb-3">Nouvelle vente</a>
 
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @if($ventes->isEmpty())
-        <div class="alert alert-info">
-            Aucune vente enregistrée pour le moment.
-        </div>
-    @else
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-success">
-                    <tr>
-                        <th>#</th>
-                        <th>Produit</th>
-                        <th>Quantité</th>
-                        <th>Prix total (F)</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($ventes as $vente)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $vente->produit->nom }}</td>
-                        <td>{{ $vente->quantite }}</td>
-                        <td>{{ number_format($vente->prix_total, 0, ',', ' ') }}</td>
-                        <td>{{ $vente->created_at->format('d/m/Y H:i') }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Client</th>
+                <th>Quantité</th>
+                <th>Prix total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($ventes as $vente)
+            <tr>
+                <td>{{ $vente->produit->nom ?? 'Produit introuvable' }}</td>
+<td>{{ $vente->client->nom ?? 'Client introuvable' }}</td>
+
+                <td>{{ $vente->quantite }}</td>
+                <td>{{ $vente->prix_total }} FCFA</td>
+                <td>
+                    <form action="{{ route('ventes.destroy', $vente) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 @endsection

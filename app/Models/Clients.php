@@ -9,4 +9,12 @@ class Clients extends Model
     protected $table = 'clients';
     protected $primaryKey = 'id';
     protected $fillable = ['nom','prenom','numero','profession','genre'];
+
+    public function ventes()
+{
+    return $this->hasMany(Vente::class);
 }
+}
+
+
+

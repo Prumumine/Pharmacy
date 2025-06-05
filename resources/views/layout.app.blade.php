@@ -9,8 +9,6 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 
   <style>
     body {
@@ -52,16 +50,14 @@
 
   <div class="sidebar">
     <h4 class="text-center">Menu</h4>
-@include('admin.dashboard')
-    <a href="{{ url('/profil') }}">Mon Profil</a>
-
+    @auth
+        @if(Auth::user()->is_role == App\Models\User::ROLE_ADMIN)
+            <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+        @endif
+    @endauth
+       <a href="#">Profil</a>
     <a href="{{url('/produits')}}">Produits</a>
-    
- 
-    <a href="{{url('/commandes')}}">Commandes</a
-    >
-    <a href="{{url('/produits')}}">Historique et suivis des Commandes</a>
- 
+    <a href="{{url('/clients')}}">Clients</a>
     <form method="POST" action="{{ route('auth.logout') }}">
     @csrf
     <button type="submit" class="btn btn-link text-white p-0 m-0" style="text-decoration: none;">Déconnexion</button>

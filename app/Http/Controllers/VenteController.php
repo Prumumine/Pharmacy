@@ -3,79 +3,72 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Vente;
+use App\Models\Produits;
+use App\Models\Clients;
 
 class VenteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-   public function index()
-{
-    $ventes = \App\Models\Vente::with('produit')->latest()->get();
-    return view('ventes.index', compact('ventes'));
-}
+    public function index()
+    {
+        // Charger les ventes avec les relations produit et client
+        $ventes = Vente::with(['produit', 'client'])->get();
+        return view('ventes.index', compact('ventes'));
+    }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $produits = Produits::all();
+        $clients = Clients::all();
+        return view('ventes.create', compact('produits', 'clients'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
-{
-    $request->validate([
-        'produit_id' => 'required|exists:produits,id',
-        'quantite' => 'required|integer|min:1',
-    ]);
+    {
+        // Validation des champs
+        $request->validate([
+            'produit_id' => 'required|exists:produits,id',
+            'client_id' => 'required|exists:clients,id',
+            'quantite' => 'required|integer|min:1',
+        ]);
 
-    $produit = \App\Models\Produit::find($request->produit_id);
-    $prix_total = $produit->prix * $request->quantite;
+        // Récupérer le produit pour vérifier le stock
+        $produit = Produits::findOrFail($request->produit_id);
 
-    \App\Models\Vente::create([
-        'produit_id' => $produit->id,
-        'quantite' => $request->quantite,
-        'prix_total' => $prix_total,
-    ]);
+        // Vérifier que la quantité demandée n'excède pas le stock
+        if ($request->quantite > $produit->stock) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['quantite' => 'La quantité demandée (' . $request->quantite . ') dépasse le stock disponible (' . $produit->stock . ').']);
+        }
 
-    return redirect()->route('ventes.index')->with('success', 'Vente enregistrée avec succès.');
-}
+        // Calcul du prix total
+        $prix_total = $produit->prix * $request->quantite;
 
+        // Créer la vente
+        Vente::create([
+            'produit_id' => $request->produit_id,
+            'client_id' => $request->client_id,
+            'quantite' => $request->quantite,
+            'prix_total' => $prix_total,
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
+        // Mettre à jour le stock du produit
+        $produit->stock -= $request->quantite;
+        $produit->save();
+
+        return redirect()->route('ventes.index')->with('success', 'Vente enregistrée avec succès.');
+    }
+
     public function show(string $id)
     {
-        //
+        $vente = Vente::with(['produit', 'client'])->findOrFail($id);
+        return view('ventes.show', compact('vente'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        Vente::destroy($id);
+        return redirect()->route('ventes.index')->with('success', 'Vente supprimée avec succès.');
     }
 }

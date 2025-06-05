@@ -6,7 +6,10 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="text-success">Produits</h2>
-        <a href="{{ route('produits.create') }}" class="btn btn-success">+ Ajouter un produit</a>
+
+        @if(Auth::check() && Auth::user()->is_role == 1)
+            <a href="{{ route('produits.create') }}" class="btn btn-success">+ Ajouter un produit</a>
+        @endif
     </div>
 
     @if(session('success'))
@@ -44,13 +47,16 @@
                         <td>{{ $produit->created_at->format('d/m/Y') }}</td>
                         <td>
                             <a href="{{ route('produits.show', $produit->id) }}" class="btn btn-sm btn-primary">Voir</a>
-                            <a href="{{ route('produits.edit', $produit->id) }}" class="btn btn-sm btn-warning">Modifier</a>
-                            <form action="{{ route('produits.destroy', $produit->id) }}" method="POST" class="d-inline"
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger">Supprimer</button>
-                            </form>
+
+                            @if(Auth::check() && Auth::user()->is_role == 1)
+                                <a href="{{ route('produits.edit', $produit->id) }}" class="btn btn-sm btn-warning">Modifier</a>
+                                <form action="{{ route('produits.destroy', $produit->id) }}" method="POST" class="d-inline"
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger">Supprimer</button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                     @endforeach
