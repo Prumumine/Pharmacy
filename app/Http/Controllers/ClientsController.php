@@ -21,7 +21,6 @@ class ClientsController extends Controller
         return view('clients.create');
     }
 
-    // Exemple dans clientsController
 public function store(Request $request)
 {
     $request->validate([

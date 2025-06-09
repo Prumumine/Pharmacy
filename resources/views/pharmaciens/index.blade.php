@@ -27,7 +27,6 @@
                         <th>#</th>
                         <th>Nom</th>
                         <th>Prénom</th>
-                        <th>Date de naissance</th>
                         <th>Genre</th>
                         <th>Poste</th>
                         <th>Actions</th> <!-- Colonne ajoutée ici -->
@@ -39,7 +38,6 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $pharmacien->nom }}</td>
                         <td>{{ $pharmacien->prenom }}</td>
-                        <td>{{ $pharmacien->date_naissance }}</td>
                         <td>{{ $pharmacien->genre }}</td>
                         <td>{{ $pharmacien->poste }}</td>
                         <td>

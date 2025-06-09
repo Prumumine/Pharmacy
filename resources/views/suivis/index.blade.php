@@ -1,116 +1,116 @@
 @extends('layout')
 
-@section('title', 'Tableau de bord')
-
 @section('content')
-<div class="container-fluid mt-4">
+<div class="container py-5">
+    <h1 class="mb-5 text-center fw-bold text-primary">Suivis Pharmacie</h1>
 
-    <!-- Statistiques globales -->
-    <div class="row text-white">
-        <div class="col-md-3">
-            <div class="card bg-primary shadow">
-                <div class="card-body">
-                    <h5>Total Produits</h5>
-                    <h3>{{ $totalProduits }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-success shadow">
-                <div class="card-body">
-                    <h5>Total Ventes</h5>
-                    <h3>{{ $totalVentes }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning shadow">
-                <div class="card-body">
-                    <h5>Total Clients</h5>
-                    <h3>{{ $totalClients }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Graphique -->
-    <div class="row mt-4">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header">Évolution des ventes</div>
-                <div class="card-body">
-                    <canvas id="ventesChart" height="120"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Alertes -->
+    <!-- Statistiques principales -->
+    <div class="row mb-5 text-center">
         <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-header bg-danger text-white">Alertes</div>
-                <div class="card-body">
-                    @forelse($alertes as $alerte)
-                        <div class="alert alert-danger">
-                            {{ $alerte }}
-                        </div>
-                    @empty
-                        <div class="alert alert-success">Aucune alerte</div>
-                    @endforelse
+            <div class="card shadow-sm border-0">
+                <div class="card-body bg-primary text-white rounded">
+                    <h6 class="card-subtitle mb-2 text-uppercase">Produits</h6>
+                    <h3 class="card-title">{{ $totalProduits }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body bg-success text-white rounded">
+                    <h6 class="card-subtitle mb-2 text-uppercase">Clients</h6>
+                    <h3 class="card-title">{{ $totalClients }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body bg-warning text-white rounded">
+                    <h6 class="card-subtitle mb-2 text-uppercase">Ventes totales</h6>
+                    <h3 class="card-title">{{ $totalVentes }}</h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Historique des suivis -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header">Historique des actions</div>
-                <div class="card-body table-responsive">
-                    <table class="table table-striped align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Type</th>
-                                <th>Description</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($suivis as $suivi)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ ucfirst($suivi->type) }}</td>
-                                <td>{{ $suivi->description }}</td>
-                                <td>{{ $suivi->created_at->format('d/m/Y H:i') }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <!-- Alertes de stock -->
+    @if($alertes->count())
+    <div class="alert alert-danger shadow-sm">
+        <h5 class="fw-bold">⚠️ Alertes de stock faible :</h5>
+        <ul class="mb-0">
+            @foreach($alertes as $alerte)
+                <li>{{ $alerte }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+
+
+    <!-- Graphique des stocks -->
+    <div class="card shadow-sm border-0 my-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0 fw-bold">📦 Graphique des stocks de produits</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="stockChart" height="120"></canvas>
         </div>
     </div>
-
 </div>
-@endsection
 
-@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('ventesChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
+    const labels = {!! json_encode($labels) !!};
+    const stocks = {!! json_encode($stocks) !!};
+
+    // Déterminer les couleurs selon le niveau de stock
+    const backgroundColors = stocks.map(stock =>
+        stock < 5 ? 'rgba(255, 0, 0, 0.7)' : 'rgba(54, 162, 235, 0.7)'
+    );
+    const borderColors = stocks.map(stock =>
+        stock < 5 ? 'rgba(255, 99, 132, 1)' : 'rgba(54, 162, 235, 1)'
+    );
+
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    const stockChart = new Chart(ctx, {
+        type: 'bar',
         data: {
-            labels: {!! json_encode($labels) !!},
+            labels: labels,
             datasets: [{
-                label: 'Ventes',
-                data: {!! json_encode($donneesVentes) !!},
-                borderColor: 'rgba(75, 192, 192, 1)',
-                tension: 0.3,
-                fill: false
+                label: 'Quantité en stock',
+                data: stocks,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1,
+                borderRadius: 5
             }]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 1000,
+                easing: 'easeOutBounce'
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: '#222',
+                    titleColor: '#fff',
+                    bodyColor: '#eee'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
         }
     });
 </script>
-@endpush
+@endsection

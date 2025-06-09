@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produits', function (Blueprint $table) {
-            $table->id();
-            $table->string('nom');
-            $table->integer('prix');
-            $table->integer('stock');
-            $table->timestamps();
-            $table->boolean('ordonnance_obligatoire')->default(false);
-
+        Schema::table('commandes', function (Blueprint $table) {
+            //
         });
     }
 
@@ -27,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('produits');
+        Schema::table('commandes', function (Blueprint $table) {
+            //
+        });
     }
 };

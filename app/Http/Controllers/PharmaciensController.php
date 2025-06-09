@@ -40,13 +40,13 @@ public function store(Request $request)
     public function show(string $id): View  
     {
         $pharmaciens= Pharmaciens::find($id);
-        return view('pharmaciens.show')->with('pharmaciens', $Pharmaciens);
+        return view('pharmaciens.show')->with('pharmaciens', $pharmaciens);
     }
 
      public function edit(string $id): View  
     {
         $pharmaciens= Pharmaciens::find($id);
-        return view('pharmaciens.edit')->with('pharmaciens', $Pharmaciens);
+        return view('pharmaciens.edit')->with('pharmaciens', $pharmaciens);
     }
 
     public function update(Request $request, string $id): RedirectResponse

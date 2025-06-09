@@ -9,11 +9,13 @@ class Produits extends Model
 
     protected $table = 'produits';
     protected $primaryKey = 'id';
-    protected $fillable = ['nom','prix','stock'];
+    protected $fillable = ['nom','prix','stock' ,'categorie', 'image', 'ordonnance_obligatoire'];
 
      public function ventes()
     {
         return $this->hasMany(Vente::class);
     }
+
+
     
 }

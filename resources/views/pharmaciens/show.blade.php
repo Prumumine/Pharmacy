@@ -7,7 +7,7 @@
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0">Détails du pharmacien : {{ $pharmaciens->nom }}</h4>
-            <a href="{{ route('pharmacienss.index') }}" class="btn btn-light btn-sm">← Retour à la liste</a>
+            <a href="{{ route('pharmaciens.index') }}" class="btn btn-light btn-sm">← Retour à la liste</a>
         </div>
 
         <div class="card-body">
@@ -33,8 +33,8 @@
         </div>
 
         <div class="card-footer bg-light text-end">
-            <a href="{{ route('pharmacienss.edit', $pharmaciens->id) }}" class="btn btn-warning me-2">Modifier</a>
-            <form action="{{ route('pharmacienss.destroy', $pharmaciens->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
+            <a href="{{ route('pharmaciens.edit', $pharmaciens->id) }}" class="btn btn-warning me-2">Modifier</a>
+            <form action="{{ route('pharmaciens.destroy', $pharmaciens->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger">Supprimer</button>

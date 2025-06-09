@@ -16,28 +16,28 @@ class SuiviController extends Controller
         $totalVentes = Vente::sum('quantite');
         $totalClients = Clients::count();
 
-        $ventes = Vente::selectRaw('DATE(created_at) as date, SUM(quantite) as total')
-                        ->groupBy('date')
-                        ->orderBy('date')
-                        ->get();
+        $produitsEnAlerte = Produits::where('stock', '<', 5)->get(); // Collection d'objets Produits
+        $alertes = $produitsEnAlerte->map(fn($p) => "Stock faible: {$p->nom}");
+        $nombreAlertes = $produitsEnAlerte->count();
 
-        $labels = $ventes->pluck('date')->toArray();
-        $donneesVentes = $ventes->pluck('total')->toArray();
-
-        $alertes = Produits::where('stock', '<', 5)->pluck('nom')->map(function($nom) {
-            return "Stock faible pour le produit : $nom";
-        });
-
+        $produitsDisponibles = Produits::where('stock', '>=', 5)->count();
         $suivis = Suivi::latest()->take(10)->get();
+
+        $produits = Produits::all();
+        $labels = $produits->pluck('nom')->toArray();
+        $stocks = $produits->pluck('stock')->toArray();
 
         return view('suivis.index', compact(
             'totalProduits',
             'totalVentes',
             'totalClients',
-            'labels',
-            'donneesVentes',
+            'produitsEnAlerte',
             'alertes',
-            'suivis'
+            'nombreAlertes',
+            'produitsDisponibles',
+            'suivis',
+            'labels',
+            'stocks'
         ));
     }
 }

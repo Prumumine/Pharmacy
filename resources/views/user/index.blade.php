@@ -17,6 +17,7 @@
                     <th>Nom</th>
                     <th>Email</th>
                     <th>Rôle</th>
+                    <th>telephone</th>
                     <th>Date d'inscription</th>
                 </tr>
             </thead>
@@ -27,6 +28,7 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->role }}</td>
+                        <td>{{ $user->telephone }}</td>
                         <td>{{ $user->created_at->format('d/m/Y') }}</td>
                     </tr>
                 @empty

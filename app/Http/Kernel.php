@@ -6,13 +6,8 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-    /**
-     * The application's global HTTP middleware stack.
-     *
-     * These middleware are run during every request to your application.
-     */
+    
     protected $middleware = [
-        // Middleware global, à garder
         \App\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
@@ -21,18 +16,13 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
-    /**
-     * The application's route middleware groups.
-     *
-     * Ici, le groupe "web" doit absolument inclure StartSession et Csrf pour l'auth.
-     */
+    
     protected $middlewareGroups = [
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQ ueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
-            // Si tu veux gérer la session de manière plus avancée, tu peux ajouter :
-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -44,16 +34,14 @@ class Kernel extends HttpKernel
         ],
     ];
 
-    /**
-     * Route middleware for assigning short names.
-     */
+   
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,             // Vérifie que l'utilisateur est connecté
+        'auth' => \App\Http\Middleware\Authenticate::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,  // Redirige si connecté
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,  
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,

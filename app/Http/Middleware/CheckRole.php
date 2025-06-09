@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     */
+    
     public function handle(Request $request, Closure $next, $role)
     {
         if (!Auth::check()) {

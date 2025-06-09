@@ -6,7 +6,7 @@
 <div class="container my-5">
     <div class="card shadow-sm">
         <div class="card-header bg-success text-white">
-            <h4 class="mb-0">Personnel</h4>
+            <h4 class="mb-0">Ajouter un client</h4>
         </div>
         <div class="card-body">
             <!-- Affichage des erreurs globales -->

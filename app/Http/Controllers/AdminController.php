@@ -33,4 +33,23 @@ class AdminController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'User role updated successfully.');
     }
+
+    public function valider($id)
+{
+    $commande = Commande::findOrFail($id);
+    $commande->statut = 'validee';
+    $commande->save();
+
+    return redirect()->back()->with('success', 'Commande validée.');
+}
+
+public function refuser($id)
+{
+    $commande = Commande::findOrFail($id);
+    $commande->statut = 'refusee';
+    $commande->save();
+
+    return redirect()->back()->with('success', 'Commande refusée.');
+}
+
 }

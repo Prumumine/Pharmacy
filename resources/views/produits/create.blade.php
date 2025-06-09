@@ -21,7 +21,7 @@
             @endif
 
             <!-- Formulaire d'ajout -->
-            <form action="{{ route('produits.store') }}" method="POST">
+            <form action="{{ route('produits.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
                     <!-- Nom du produit -->
@@ -61,6 +61,26 @@
                         <div class="mb-3">
                             <label for="stock" class="form-label">Quantité en stock</label>
                             <input type="number" name="stock" id="stock" class="form-control" value="{{ old('stock') }}" placeholder="Ex : 100" min="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Ordonnance obligatoire -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Ordonnance obligatoire ?</label><br>
+                            <input type="checkbox" name="ordonnance_obligatoire" value="1" {{ old('ordonnance_obligatoire') ? 'checked' : '' }}>
+                            <label>Oui</label>
+                        </div>
+                    </div>
+
+                    <!-- Image du produit -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image du produit (facultatif)</label>
+                            <input type="file" name="image" id="image" class="form-control" accept="image/*">
+                            <small class="text-muted">Formats acceptés : JPG, PNG, JPEG</small>
                         </div>
                     </div>
                 </div>

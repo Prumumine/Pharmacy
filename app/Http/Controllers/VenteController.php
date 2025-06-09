@@ -11,7 +11,6 @@ class VenteController extends Controller
 {
     public function index()
     {
-        // Charger les ventes avec les relations produit et client
         $ventes = Vente::with(['produit', 'client'])->get();
         return view('ventes.index', compact('ventes'));
     }
@@ -25,27 +24,22 @@ class VenteController extends Controller
 
     public function store(Request $request)
     {
-        // Validation des champs
         $request->validate([
             'produit_id' => 'required|exists:produits,id',
             'client_id' => 'required|exists:clients,id',
             'quantite' => 'required|integer|min:1',
         ]);
 
-        // Récupérer le produit pour vérifier le stock
         $produit = Produits::findOrFail($request->produit_id);
 
-        // Vérifier que la quantité demandée n'excède pas le stock
         if ($request->quantite > $produit->stock) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['quantite' => 'La quantité demandée (' . $request->quantite . ') dépasse le stock disponible (' . $produit->stock . ').']);
         }
 
-        // Calcul du prix total
         $prix_total = $produit->prix * $request->quantite;
 
-        // Créer la vente
         Vente::create([
             'produit_id' => $request->produit_id,
             'client_id' => $request->client_id,
@@ -53,7 +47,6 @@ class VenteController extends Controller
             'prix_total' => $prix_total,
         ]);
 
-        // Mettre à jour le stock du produit
         $produit->stock -= $request->quantite;
         $produit->save();
 

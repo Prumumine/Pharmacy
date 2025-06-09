@@ -17,6 +17,8 @@ return new class extends Migration
         $table->foreignId('produit_id')->constrained()->onDelete('cascade');
         $table->integer('quantite');
         $table->timestamps();
+        $table->string('statut')->default('en_attente'); 
+
     });    }
 
     /**

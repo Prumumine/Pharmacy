@@ -9,18 +9,13 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    /**
-     * Affiche le formulaire de connexion
-     */
+    
     public function login()
     {
         return view('auth.login');
     }
 
-    /**
-     * Traite la connexion
-     */
-    public function loginPost(Request $request)
+       public function loginPost(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -30,8 +25,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Redirection vers la page suivis après connexion
-            return redirect()->route('suivis.index');
+            return redirect()->route('produits.index');
         }
 
         return back()->withErrors([
@@ -39,17 +33,12 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    /**
-     * Affiche le formulaire d'inscription
-     */
+   
     public function register()
     {
         return view('auth.register');
     }
 
-    /**
-     * Traite l'inscription
-     */
     public function registerPost(Request $request)
     {
         $request->validate([
@@ -66,14 +55,10 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        // Redirection vers la page suivis après inscription
-        return redirect()->route('suivis.index');
+        return redirect()->route('produits.index');
     }
 
-    /**
-     * Déconnexion
-     */
-    public function logout(Request $request)
+        public function logout(Request $request)
     {
         Auth::logout();
 
